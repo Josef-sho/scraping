@@ -1,57 +1,26 @@
-from bs4 import BeautifulSoup
 import requests
+from bs4 import BeautifulSoup
+import smtplib
 
-cot = requests.get('https://news.ycombinator.com')
+my_email = "josefsho90@gmail.com"
+password = "oxjwqyefxndqbbuf"
 
-cot = cot.text
-soup = BeautifulSoup(cot, "html.parser")
-article_text = soup.find_all(class_="titleline")
+respo = requests.get("https://www.jumia.com.ng/freepods-2-2baba-version-true-wireless-earbuds-oraimo-mpg1634823.html")
+respo = respo.text
 
-titles = []
-links = []
-votes = []
+soup = BeautifulSoup(respo, "html.parser")
 
-article_vote = soup.find_all(name="span", class_="score")
-
-for title in article_text:
-    titles.append(title.text)
-    links.append(title.find(name="a").get("href"))
-
-
-for article in article_vote:
-    votes.append(article.text)
+price = soup.find(name="span", class_="-b -ltr -tal -fs24")
+price = price.text.strip('₦').replace(',', '').strip(' ')
 
 
 
-for i in range(len(votes)):
-    print(titles[i])
-    print(links[i])
-    print(votes[i])
-
-
-
-
-
-"""print(article_text.text)
-article_link = soup.find(name='a')
-print(article_link.get("href"))
-article_vote = soup.find(name="span", class_ ="score")
-print(article_vote.text)
-"""
-
-
-
-
-"""
-with open("website.html", "r", encoding="utf8") as html:
-    co = html.read()
-
-soup = BeautifulSoup(co, "html.parser")
-tags = soup.find_all(name='a')
-
-# for tg in tags:
-#     # print(tg.get("href"))
-#     pass
-
-hed = soup.find(id = "name")
-print(hed)"""
+if int(price) < 10000:
+    with smtplib.SMTP_SSL('smtp.gmail.com', port=465) as connection:
+        connection.login(user=my_email, password=password)
+        connection.sendmail(from_addr=my_email, to_addrs="josephshodunke4@gmail.com",
+                            msg=f"Subject: price drop \n\nthe price of oarimo pods has dropped to ₦10000 go to this link to"
+                                f" purchase  https://www.jumia.com.ng/freepods-2-2baba-version-true-wireless-earbuds-ora"
+                                f"imo-mpg1634823.html")
+else:
+    print('sike')
